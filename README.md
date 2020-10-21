@@ -5,6 +5,13 @@
 
 Have you ever wanted cute 3x3 images from snowflake IDs? Great, because here they are!
 
+Examples:
+
+![](https://i.imgur.com/fa4rkle.png)
+![](https://i.imgur.com/GYQWhtN.png)
+![](https://i.imgur.com/ddrpniN.png)
+![](https://i.imgur.com/Pi3iPHE.png)
+
 ## Installation
 Requires Python 3.6+
 
