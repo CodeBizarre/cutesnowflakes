@@ -32,5 +32,7 @@ jobs:
 
     - name: Test with Pytest
       run: |
+        cd src
         pip install -e .
+        cd ..
         pytest src/tests/
