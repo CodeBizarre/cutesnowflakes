@@ -2,10 +2,10 @@ import sys
 
 import numpy
 
+from typing import Tuple
+
 from PIL import Image
 from PIL.PngImagePlugin import PngImageFile, PngInfo
-
-VERSION = "0.2.0"
 
 class CuteSnowflakes:
     def __init__(self, mode: str = "red", fmt: tuple = None) -> None:
@@ -32,7 +32,7 @@ class CuteSnowflakes:
         self.mode = mode
         self.format = self.__switch.get(self.mode)
 
-    def encode(self, snowflake: str) -> tuple[Image, PngInfo]:
+    def encode(self, snowflake: str) -> Tuple[Image.Image, PngInfo]:
         """Takes a snowflake in string form and returns a Pillow image."""
         if len(snowflake) != 18:
             raise ValueError("Must provide a valid snowflake.")
@@ -85,7 +85,7 @@ def __usage():
         "decode <path/to/file.png>>"
     )
 
-if __name__ == "__main__":
+def main():
     action = sys.argv[1].lower()
 
     instance = CuteSnowflakes()
@@ -107,3 +107,6 @@ if __name__ == "__main__":
             print(instance.decode(fp))
     else:
         __usage()
+
+if __name__ == "__main__":
+    main()
