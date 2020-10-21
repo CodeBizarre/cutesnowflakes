@@ -22,10 +22,10 @@ As a library:
 ## CREATING A SNOWFLAKE
 from cutesnowflakes import CuteSnowflakes
 
-flake, meta = CuteSnowflakes()
+flake = CuteSnowflakes()
 
 # Create the snowflake
-image = flake.encode("118999881999119725")
+image, meta = flake.encode("118999881999119725")
 # Open it in the system photo viewer
 image.show()
 # Save the image with its metadata
