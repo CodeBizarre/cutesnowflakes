@@ -1,7 +1,6 @@
 ![Tests](https://github.com/CodeBizarre/cutesnowflakes/workflows/Tests/badge.svg?branch=master)
 [![PyPI version](https://badge.fury.io/py/cutesnowflakes.svg)](https://badge.fury.io/py/cutesnowflakess)
 
-(Note) Currently MacOS tests are failing under Python 3.9
 # Cute Snowflakes
 
 Have you ever wanted cute 3x3 images from snowflake IDs? Great, because here they are!
