@@ -29,6 +29,11 @@ class CuteSnowflakes:
             raise ValueError(f"Error setting format: {mode}:{fmt}")
 
     def set_mode(self, mode: str):
+        if mode not in self.__switch:
+            raise ValueError(
+                f"Invalid mode passed. Valid modes are: {list(self.__switch.keys())}"
+            )
+
         self.mode = mode
         self.format = self.__switch.get(self.mode)
 
