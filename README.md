@@ -25,6 +25,18 @@ As a command line application:
 
 `cutesnowflakes.py --decode folder/my_file.png`
 
+Available colors for encoding are:
+```
+grey
+red
+green
+blue
+purple
+magenta
+yellow
+orange
+```
+
 As a library:
 ```py
 ## CREATING A SNOWFLAKE
@@ -44,4 +56,7 @@ from PIL.PngImagePlugin import PngImageFile
 
 with PngImageFile("my_image.png") as fp:
     print(flake.decode(fp))
+
+## CHANGING SNOWFLAKE COLOR
+flake.set_mode("magenta")
 ```
