@@ -62,25 +62,25 @@ flake.set_mode("magenta")
 
 ## Changelog:
 ### Legend:
-```
-+: Added
--: Removed
-*: Fixed
-\: Changed
+```diff
++   : Added
+-   : Removed
+*** : Fixed
+\   : Changed
 ```
 ### 0.3.0: (In development):
-```
+```diff
 + __version__ to __init__.py
 + Error handling for set_mode()
 ```
 
 ### 0.2.1 (Current release):
-```
-\* Various minor documentation and structure changes/fixes
+```diff
+*** \ Various minor documentation and structure changes/fixes
 ```
 
 ### 0.2.0:
-```
+```diff
 \ Move to a class instead of bare functions
 \ Improved command line arguments
 \ Moved version to setup.py
@@ -88,6 +88,6 @@ flake.set_mode("magenta")
 ```
 
 ### 0.1.0:
-```
+```diff
 + Initial version
 ```
