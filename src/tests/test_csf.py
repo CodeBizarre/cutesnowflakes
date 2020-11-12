@@ -1,4 +1,5 @@
 import os
+import pytest
 
 from PIL.PngImagePlugin import PngImageFile
 
@@ -25,5 +26,22 @@ def test_encode():
     with PngImageFile("test.png") as fp:
         assert csf.decode(fp) == uid
 
-    if os.path.exists("test.png"):
-        os.remove("test.png")
+    if os.path.exists("test.png"): os.remove("test.png")
+
+def test_set_mode():
+    colors = [ "grey", "red", "green", "blue", "purple", "magenta", "yellow", "orange"]
+    csf = CuteSnowflakes()
+
+    for color in colors:
+        csf.set_mode(color)
+
+        result, meta = csf.encode(uid)
+        result.save("test.png", pnginfo=meta)
+
+        with PngImageFile("test.png") as fp:
+            assert csf.decode(fp) == uid
+
+        if os.path.exists("test.png"): os.remove("test.png")
+
+    with pytest.raises(ValueError):
+        csf.set_mode("incorrect color")
