@@ -59,3 +59,35 @@ with PngImageFile("my_image.png") as fp:
 ## CHANGING SNOWFLAKE COLOR
 flake.set_mode("magenta")
 ```
+
+## Changelog:
+### Legend:
+```
++: Added
+-: Removed
+*: Fixed
+\: Changed
+```
+### 0.3.0: (In development):
+```
++ __version__ to __init__.py
++ Error handling for set_mode()
+```
+
+### 0.2.1 (Current release):
+```
+\* Various minor documentation and structure changes/fixes
+```
+
+### 0.2.0:
+```
+\ Move to a class instead of bare functions
+\ Improved command line arguments
+\ Moved version to setup.py
++ Multiple colors with set_mode() and format hint PngInfo
+```
+
+### 0.1.0:
+```
++ Initial version
+```
