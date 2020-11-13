@@ -32,7 +32,7 @@ class CuteSnowflakes:
         self.format = self.__switch.get(self.mode, None)
 
         if self.format is None:
-            raise ValueError(f"Error setting format: {mode}:{fmt}")
+            raise ValueError(f"Error setting format to mode: {mode}, custom: {fmt}")
 
     def set_mode(self, mode: str):
         if mode not in self.__switch:
