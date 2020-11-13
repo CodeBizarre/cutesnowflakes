@@ -1,11 +1,14 @@
 import os
 import pytest
 
-from PIL.PngImagePlugin import PngImageFile
+from PIL.PngImagePlugin import PngImageFile, PngInfo
 
 from cutesnowflakes.cutesnowflakes import CuteSnowflakes
 
 uid = "674438327927308358"
+
+def delete_test_png():
+    if os.path.exists("test.png"): os.remove("test.png")
 
 def test_decode():
     csf = CuteSnowflakes()
@@ -26,7 +29,7 @@ def test_encode():
     with PngImageFile("test.png") as fp:
         assert csf.decode(fp) == uid
 
-    if os.path.exists("test.png"): os.remove("test.png")
+    delete_test_png()
 
 def test_set_mode():
     colors = [ "grey", "red", "green", "blue", "purple", "magenta", "yellow", "orange"]
@@ -41,7 +44,21 @@ def test_set_mode():
         with PngImageFile("test.png") as fp:
             assert csf.decode(fp) == uid
 
-        if os.path.exists("test.png"): os.remove("test.png")
+        delete_test_png()
+
+def test_custom_encode():
+    csf = CuteSnowflakes()
+
+    csf.set_custom((100, 999, 62))
+    csf.set_mode("custom")
+
+    result, meta = csf.encode(uid)
+    result.save("test.png", pnginfo=meta)
+
+    with PngImageFile("test.png") as fp:
+        assert csf.decode(fp) == uid
+
+    delete_test_png()
 
 def test_set_mode_error():
     csf = CuteSnowflakes()
