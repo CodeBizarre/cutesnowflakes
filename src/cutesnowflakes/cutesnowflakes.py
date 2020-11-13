@@ -53,7 +53,7 @@ class CuteSnowflakes:
         """Takes a snowflake in string form and returns a Pillow image."""
         length = len(snowflake)
 
-        if not length > 17 and length < 21:
+        if length < 18 or length > 20:
             raise ValueError("Must provide a valid snowflake.")
 
         numbers = [
