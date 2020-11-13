@@ -7,9 +7,15 @@ from typing import Tuple
 from PIL import Image
 from PIL.PngImagePlugin import PngImageFile, PngInfo
 
+def clamp_rgb(values: Tuple[int, int, int]) -> Tuple[int, int, int]:
+    return tuple(min(156, i) for i in values)
+
 class CuteSnowflakes:
-    def __init__(self, mode: str = "red", fmt: tuple = None) -> None:
+    def __init__(self, mode: str = "red", fmt: tuple = (100, 0, 0)) -> None:
         self.mode = mode.lower()
+
+        # Ensure that no value in `fmt` exceeds 156 to prevent integer overflow
+        fmt = clamp_rgb(fmt)
 
         self.__switch = {
             "grey": (100, 100, 100),
@@ -41,7 +47,7 @@ class CuteSnowflakes:
         if len(fmt) != 3:
             raise ValueError("Tuple fmt must be of length 3.")
 
-        self.__switch["custom"] = fmt
+        self.__switch["custom"] = clamp_rgb(fmt)
 
     def encode(self, snowflake: str) -> Tuple[Image.Image, PngInfo]:
         """Takes a snowflake in string form and returns a Pillow image."""
@@ -115,9 +121,7 @@ def main():
 
         if mode == "custom":
             instance.set_custom(
-                tuple(
-                    min(156, int(rgb)) for rgb in sys.argv[4:7]
-                )
+                clamp_rgb(int(rgb) for rgb in sys.argv[4:7])
             )
 
         instance.set_mode(mode)
