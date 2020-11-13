@@ -74,6 +74,7 @@ flake.set_mode("magenta")
 + Error handling for set_mode()
 + Support for 19 and 20 digit snowflakes
 \ Various minor code cleanups and improvements
+\ Rename __usage() to print_usage()
 ```
 
 ### 0.2.1 (Current release):
