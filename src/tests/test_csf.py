@@ -43,5 +43,8 @@ def test_set_mode():
 
         if os.path.exists("test.png"): os.remove("test.png")
 
+def test_set_mode_error():
+    csf = CuteSnowflakes()
+
     with pytest.raises(ValueError):
         csf.set_mode("incorrect color")
