@@ -86,13 +86,12 @@ class CuteSnowflakes:
 
         data = numpy.array(image)
 
+        meta = 100
+
         try:
-            meta = image.text["format"]
-        except AttributeError:
+            meta = int(image.text["format"])
+        except (AttributeError, KeyError):
             print("Warning: Unable to fetch image metadata, using default value (Red).")
-            meta = 100
-        finally:
-            meta = int(meta)
 
         result = [
             str(data[v][2] - meta).zfill(2) for v in numpy.ndindex(data.shape[:2])
@@ -136,7 +135,7 @@ def main() -> None:
     elif action in ("encode", "--encode", "-e"):
         result, meta = instance.encode(sys.argv[2])
         result.show()
-        result.save(f"{sys.argv[2]}.PNG", pnginfo=meta)
+        result.save(f"{sys.argv[2]}.png", pnginfo=meta)
     elif action in ("decode", "--decode", "-d"):
         with PngImageFile(f"{sys.argv[2]}") as fp:
             print(instance.decode(fp))
