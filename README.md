@@ -77,6 +77,7 @@ flake.set_mode("magenta")
 \ Various minor code cleanups and improvements
 \ Rename __usage() to print_usage()
 \ Improved test suite
+\ Improved type annotations
 *** Possibility for integer overflows
 ```
 

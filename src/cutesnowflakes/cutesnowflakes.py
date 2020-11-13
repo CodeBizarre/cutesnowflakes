@@ -2,16 +2,16 @@ import sys
 
 import numpy
 
-from typing import Tuple
+from typing import Generator, Tuple, Union
 
 from PIL import Image
 from PIL.PngImagePlugin import PngImageFile, PngInfo
 
-def clamp_rgb(values: Tuple[int, int, int]) -> Tuple[int, int, int]:
+def clamp_rgb(values: Union[Tuple[int, ...], Generator]) -> Tuple[int, ...]:
     return tuple(min(156, i) for i in values)
 
 class CuteSnowflakes:
-    def __init__(self, mode: str = "red", fmt: tuple = (100, 0, 0)) -> None:
+    def __init__(self, mode: str = "red", fmt: Tuple[int, ...] = (100, 0, 0)) -> None:
         self.mode = mode.lower()
 
         # Ensure that no value in `fmt` exceeds 156 to prevent integer overflow
@@ -34,7 +34,7 @@ class CuteSnowflakes:
         if self.format is None:
             raise ValueError(f"Error setting format to mode: {mode}, custom: {fmt}")
 
-    def set_mode(self, mode: str):
+    def set_mode(self, mode: str) -> None:
         if mode not in self.__switch:
             raise ValueError(
                 f"Invalid mode passed. Valid modes are: {list(self.__switch.keys())}"
@@ -43,7 +43,7 @@ class CuteSnowflakes:
         self.mode = mode
         self.format = self.__switch.get(self.mode)
 
-    def set_custom(self, fmt: Tuple[int, int, int]) -> None:
+    def set_custom(self, fmt: Tuple[int, ...]) -> None:
         if len(fmt) != 3:
             raise ValueError("Tuple fmt must be of length 3.")
 
@@ -79,7 +79,7 @@ class CuteSnowflakes:
         meta.add_text("format", str(self.format[2]))
         return (Image.fromarray(data), meta)
 
-    def decode(_, image: PngImageFile) -> str:
+    def decode(self, image: PngImageFile) -> str:
         """Decodes a snowflake ID from a cutesnowflakes Pillow image."""
         if image.width != 3 and image.height != 3:
             raise ValueError("Image must be 3x3 pixels")
@@ -104,14 +104,14 @@ class CuteSnowflakes:
 
         return "".join(result)
 
-def print_usage():
+def print_usage() -> None:
     print(
         f"Usage: {sys.argv[0]} <help | encode | decode\n"
         "encode <snowflake> [color] [r] [g] [b]\n"
         "decode <path/to/file.png>>"
     )
 
-def main():
+def main() -> None:
     action = sys.argv[1].lower()
 
     instance = CuteSnowflakes()
