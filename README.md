@@ -76,6 +76,7 @@ flake.set_mode("magenta")
 + Support for custom colors through command line --encode argument
 \ Various minor code cleanups and improvements
 \ Rename __usage() to print_usage()
+*** Possibility for integer overflows
 ```
 
 ### 0.2.1 (Current release):
