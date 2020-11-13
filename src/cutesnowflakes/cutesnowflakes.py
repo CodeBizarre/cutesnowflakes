@@ -83,8 +83,7 @@ class CuteSnowflakes:
             meta = int(meta)
 
         result = [
-            str(int(data[v][2] - meta)).zfill(2)
-            for _, v in enumerate(numpy.ndindex(data.shape[:2]))
+            str(int(data[v][2] - meta)).zfill(2) for v in numpy.ndindex(data.shape[:2])
         ]
 
         final_alpha = data[1][1][3]
