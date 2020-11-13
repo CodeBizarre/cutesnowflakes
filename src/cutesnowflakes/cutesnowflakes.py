@@ -37,6 +37,12 @@ class CuteSnowflakes:
         self.mode = mode
         self.format = self.__switch.get(self.mode)
 
+    def set_custom(self, fmt: Tuple[int, int, int]) -> None:
+        if len(fmt) != 3:
+            raise ValueError("Tuple fmt must be of length 3.")
+
+        self.__switch["custom"] = fmt
+
     def encode(self, snowflake: str) -> Tuple[Image.Image, PngInfo]:
         """Takes a snowflake in string form and returns a Pillow image."""
         length = len(snowflake)
@@ -95,7 +101,7 @@ class CuteSnowflakes:
 def print_usage():
     print(
         f"Usage: {sys.argv[0]} <help | encode | decode\n"
-        "encode <snowflake> [mode=red]\n"
+        "encode <snowflake> [color] [r] [g] [b]\n"
         "decode <path/to/file.png>>"
     )
 
@@ -105,11 +111,22 @@ def main():
     instance = CuteSnowflakes()
 
     try:
-        instance.set_mode(sys.argv[3].lower())
+        mode = sys.argv[3].lower()
+
+        if mode == "custom":
+            instance.set_custom(
+                tuple(
+                    min(156, int(rgb)) for rgb in sys.argv[4:7]
+                )
+            )
+
+        instance.set_mode(mode)
     except IndexError:
         instance.set_mode("red")
+    except ValueError:
+        print("Error: values for r, g, b must be valid integers")
+        return
 
-    # TODO: Add custom option for the command line
     if action in ("help", "?", "/?", "-h", "--help"):
         print_usage()
     elif action in ("encode", "--encode", "-e"):

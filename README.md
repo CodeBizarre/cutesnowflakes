@@ -73,6 +73,7 @@ flake.set_mode("magenta")
 + __version__ to __init__.py
 + Error handling for set_mode()
 + Support for 19 and 20 digit snowflakes
++ Support for custom colors through command line --encode argument
 \ Various minor code cleanups and improvements
 \ Rename __usage() to print_usage()
 ```
