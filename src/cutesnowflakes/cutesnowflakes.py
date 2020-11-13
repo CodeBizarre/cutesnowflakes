@@ -76,8 +76,8 @@ class CuteSnowflakes:
 
         try:
             meta = image.text["format"]
-        except Exception:
-            print("Warning: Unable to fetch image metadata, using default value.")
+        except AttributeError:
+            print("Warning: Unable to fetch image metadata, using default value (Red).")
             meta = 100
         finally:
             meta = int(meta)
