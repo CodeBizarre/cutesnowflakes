@@ -72,6 +72,7 @@ flake.set_mode("magenta")
 ```diff
 + __version__ to __init__.py
 + Error handling for set_mode()
++ Support for 19 and 20 digit snowflakes
 ```
 
 ### 0.2.1 (Current release):

@@ -39,7 +39,9 @@ class CuteSnowflakes:
 
     def encode(self, snowflake: str) -> Tuple[Image.Image, PngInfo]:
         """Takes a snowflake in string form and returns a Pillow image."""
-        if len(snowflake) != 18:
+        length = len(snowflake)
+
+        if not length > 17 and length < 21:
             raise ValueError("Must provide a valid snowflake.")
 
         numbers = [
@@ -48,14 +50,18 @@ class CuteSnowflakes:
             ) for i in range(0, len(snowflake), 2)
         ]
 
-        data = numpy.zeros((3, 3, 3), dtype=numpy.uint8)
+        data = numpy.zeros([3, 3, 4], dtype=numpy.uint8)
 
         for i, v in enumerate(numpy.ndindex(data.shape[:2])):
             data[v] = (
                 numbers[i] + self.format[0],
                 numbers[i] + self.format[1],
-                numbers[i] + self.format[2]
+                numbers[i] + self.format[2],
+                255
             )
+
+        if length > 18:
+            data[1][1][3] = 255 - numbers[9:][0]
 
         meta = PngInfo()
         meta.add_text("format", str(self.format[2]))
@@ -80,6 +86,10 @@ class CuteSnowflakes:
             str(int(data[v][2] - meta)).zfill(2)
             for _, v in enumerate(numpy.ndindex(data.shape[:2]))
         ]
+
+        final_alpha = data[1][1][3]
+        if final_alpha != 255:
+            result.append(str(255 - final_alpha))
 
         return "".join(result)
 
