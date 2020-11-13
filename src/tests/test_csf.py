@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from PIL.PngImagePlugin import PngImageFile, PngInfo
+from PIL.PngImagePlugin import PngImageFile
 
 from cutesnowflakes.cutesnowflakes import CuteSnowflakes
 
