@@ -92,7 +92,7 @@ class CuteSnowflakes:
 
         return "".join(result)
 
-def __usage():
+def print_usage():
     print(
         f"Usage: {sys.argv[0]} <help | encode | decode\n"
         "encode <snowflake> [mode=red]\n"
@@ -111,7 +111,7 @@ def main():
 
     # TODO: Add custom option for the command line
     if action in ("help", "?", "/?", "-h", "--help"):
-        __usage()
+        print_usage()
     elif action in ("encode", "--encode", "-e"):
         result, meta = instance.encode(sys.argv[2])
         result.show()
@@ -120,7 +120,7 @@ def main():
         with PngImageFile(f"{sys.argv[2]}") as fp:
             print(instance.decode(fp))
     else:
-        __usage()
+        print_usage()
 
 if __name__ == "__main__":
     main()
