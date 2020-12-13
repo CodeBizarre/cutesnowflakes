@@ -38,7 +38,7 @@ def test_usage(capsys):
     print_usage()
 
     assert capsys.readouterr().out == \
-        f"Usage: {sys.argv[0]} <help | encode | decode\n" \
+        f"Usage: {sys.argv[0]} <help | encode | decode>\n" \
         "encode <snowflake> [color] [r] [g] [b]\n" \
         "decode <path/to/file.png>>\n"
 

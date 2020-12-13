@@ -105,7 +105,7 @@ class CuteSnowflakes:
 
 def print_usage() -> None:
     print(
-        f"Usage: {sys.argv[0]} <help | encode | decode\n"
+        f"Usage: {sys.argv[0]} <help | encode | decode>\n"
         "encode <snowflake> [color] [r] [g] [b]\n"
         "decode <path/to/file.png>>"
     )
