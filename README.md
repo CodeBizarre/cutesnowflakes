@@ -68,7 +68,12 @@ flake.set_mode("magenta")
 *** : Fixed
 \   : Changed
 ```
-### 0.3.0: (In development):
+### 0.4.0 (In development):
+```diff
+(No changes yet)
+```
+
+### 0.3.0 (Current release):
 ```diff
 + __version__ to __init__.py
 + Error handling for set_mode()
@@ -81,7 +86,7 @@ flake.set_mode("magenta")
 *** Possibility for integer overflows
 ```
 
-### 0.2.1 (Current release):
+### 0.2.1:
 ```diff
 *** \ Various minor documentation and structure changes/fixes
 ```
