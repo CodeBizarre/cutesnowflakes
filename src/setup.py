@@ -5,7 +5,7 @@ with open("../README.md") as fp:
 
 setup(
     name="cutesnowflakes",
-    version="0.2.1",
+    version="0.3.0",
     description="Cute 3x3 images from snowflake IDs",
     long_description=long_description,
     long_description_content_type="text/markdown",
