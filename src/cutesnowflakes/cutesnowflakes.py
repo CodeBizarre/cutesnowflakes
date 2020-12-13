@@ -4,6 +4,7 @@ import numpy
 
 from typing import Generator, Tuple, Union
 
+from numpy import uint8
 from PIL import Image
 from PIL.PngImagePlugin import PngImageFile, PngInfo
 
@@ -62,7 +63,7 @@ class CuteSnowflakes:
             ) for i in range(0, len(snowflake), 2)
         ]
 
-        data = numpy.zeros([3, 3, 4], dtype=numpy.uint8)
+        data = numpy.zeros([3, 3, 4], dtype=uint8)
 
         for i, v in enumerate(numpy.ndindex(data.shape[:2])):
             data[v] = (
