@@ -13,7 +13,7 @@ Examples:
 ![](https://i.imgur.com/Pi3iPHE.png)
 
 ## Installation
-Requires Python 3.6+
+Requires Python 3.7+
 
 `pip install cutesnowflakes`
 
@@ -39,12 +39,10 @@ orange
 As a library:
 ```py
 ## CREATING A SNOWFLAKE
-from cutesnowflakes import CuteSnowflakes
-
-flake = CuteSnowflakes()
+from cutesnowflakes import encode, decode
 
 # Create the snowflake
-image, meta = flake.encode("118999881999119725")
+image, meta = encode("118999881999119725")
 # Open it in the system photo viewer
 image.show()
 # Save the image with its metadata
@@ -54,10 +52,12 @@ image.save("my_image.png", pnginfo=meta)
 from PIL.PngImagePlugin import PngImageFile
 
 with PngImageFile("my_image.png") as fp:
-    print(flake.decode(fp))
+    print(decode(fp))
 
-## CHANGING SNOWFLAKE COLOR
-flake.set_mode("magenta")
+## USING A DIFFERENT COLOR
+from cutesnowflakes import Color
+
+image, meta = encode("118999881999119725", Color.magenta)
 ```
 
 ## Changelog:
@@ -70,10 +70,14 @@ flake.set_mode("magenta")
 ```
 ### 0.4.0 (In development):
 ```diff
-(No changes yet)
+\\\ Major rewrite
++ __version__ import to __init__.py
+- CuteSnowflakes class
+- Support for custom formatting (Temporarily)
+\ Now requires Python 3.7 or higher
 ```
 
-### 0.3.0 (Current release):
+### 0.3.0 (Current release)
 ```diff
 + __version__ to __init__.py
 + Error handling for set_mode()

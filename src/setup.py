@@ -1,11 +1,13 @@
 from setuptools import setup
 
+from cutesnowflakes import __version__
+
 with open("../README.md") as fp:
     long_description = fp.read()
 
 setup(
     name="cutesnowflakes",
-    version="0.3.0",
+    version=__version__,
     description="Cute 3x3 images from snowflake IDs",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -1,132 +1,97 @@
+from __future__ import annotations
+
 import sys
 
 import numpy
 
-from typing import Generator, Tuple, Union
+from enum import Enum
 
 from numpy import uint8
 from PIL import Image
 from PIL.PngImagePlugin import PngImageFile, PngInfo
 
-def clamp_rgb(values: Union[Tuple[int, ...], Generator]) -> Tuple[int, ...]:
+def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
     return tuple(min(156, i) for i in values)
 
-class CuteSnowflakes:
-    def __init__(self, mode: str = "red", fmt: Tuple[int, ...] = (100, 0, 0)) -> None:
-        self.mode = mode.lower()
+# TODO: Custom
+class Color(Enum):
+    grey    = (100, 100, 100)
+    red     = (100, 0, 0)
+    green   = (0, 100, 0)
+    blue    = (0, 0, 100)
+    purple  = (50, 0, 100)
+    magenta = (100, 0, 100)
+    yellow  = (150, 150, 0)
+    orange  = (150, 75, 0)
 
-        # Ensure that no value in `fmt` exceeds 156 to prevent integer overflow
-        fmt = clamp_rgb(fmt)
+def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInfo]:
+    """Takes a snowflake in string form and returns a Pillow image."""
+    length = len(snowflake)
 
-        self.__switch = {
-            "grey": (100, 100, 100),
-            "red": (100, 0, 0),
-            "green": (0, 100, 0),
-            "blue": (0, 0, 100),
-            "purple": (50, 0, 100),
-            "magenta": (100, 0, 100),
-            "yellow": (150, 150, 0),
-            "orange": (150, 75, 0),
-            "custom": fmt
-        }
+    if length < 18 or length > 20:
+        raise ValueError("Must provide a valid snowflake.")
 
-        self.format = self.__switch.get(self.mode, None)
+    numbers = [
+        int(
+            snowflake[i:i + 2]
+        ) for i in range(0, len(snowflake), 2)
+    ]
 
-        if self.format is None:
-            raise ValueError(f"Error setting format to mode: {mode}, custom: {fmt}")
+    data = numpy.zeros([3, 3, 4], dtype=uint8)
 
-    def set_mode(self, mode: str) -> None:
-        if mode not in self.__switch:
-            raise ValueError(
-                f"Invalid mode passed. Valid modes are: {list(self.__switch.keys())}"
-            )
+    for i, v in enumerate(numpy.ndindex(data.shape[:2])):
+        data[v] = (
+            numbers[i] + mode.value[0],
+            numbers[i] + mode.value[1],
+            numbers[i] + mode.value[2],
+            255
+        )
 
-        self.mode = mode
-        self.format = self.__switch.get(self.mode)
+    if length > 18:
+        data[1][1][3] = 255 - numbers[9:][0]
 
-    def set_custom(self, fmt: Tuple[int, ...]) -> None:
-        if len(fmt) != 3:
-            raise ValueError("Tuple fmt must be of length 3.")
+    meta = PngInfo()
+    meta.add_text("format", str(mode.value[2]))
+    return (Image.fromarray(data), meta)
 
-        self.__switch["custom"] = clamp_rgb(fmt)
+def decode(image: PngImageFile) -> str:
+    """Decodes a snowflake ID from a cutesnowflakes Pillow image."""
+    if image.width != 3 and image.height != 3:
+        raise ValueError("Image must be 3x3 pixels")
 
-    def encode(self, snowflake: str) -> Tuple[Image.Image, PngInfo]:
-        """Takes a snowflake in string form and returns a Pillow image."""
-        length = len(snowflake)
+    data = numpy.array(image)
 
-        if length < 18 or length > 20:
-            raise ValueError("Must provide a valid snowflake.")
+    meta = 100
 
-        numbers = [
-            int(
-                snowflake[i:i + 2]
-            ) for i in range(0, len(snowflake), 2)
-        ]
+    try:
+        meta = int(image.text["format"])
+    except (AttributeError, KeyError):
+        print("Warning: Unable to fetch image metadata, using default value (Red).")
 
-        data = numpy.zeros([3, 3, 4], dtype=uint8)
+    result = [
+        str(data[v][2] - meta).zfill(2) for v in numpy.ndindex(data.shape[:2])
+    ]
 
-        for i, v in enumerate(numpy.ndindex(data.shape[:2])):
-            data[v] = (
-                numbers[i] + self.format[0],
-                numbers[i] + self.format[1],
-                numbers[i] + self.format[2],
-                255
-            )
+    final_alpha = data[1][1][3]
+    if final_alpha != 255:
+        result.append(str(255 - final_alpha))
 
-        if length > 18:
-            data[1][1][3] = 255 - numbers[9:][0]
-
-        meta = PngInfo()
-        meta.add_text("format", str(self.format[2]))
-        return (Image.fromarray(data), meta)
-
-    def decode(self, image: PngImageFile) -> str:
-        """Decodes a snowflake ID from a cutesnowflakes Pillow image."""
-        if image.width != 3 and image.height != 3:
-            raise ValueError("Image must be 3x3 pixels")
-
-        data = numpy.array(image)
-
-        meta = 100
-
-        try:
-            meta = int(image.text["format"])
-        except (AttributeError, KeyError):
-            print("Warning: Unable to fetch image metadata, using default value (Red).")
-
-        result = [
-            str(data[v][2] - meta).zfill(2) for v in numpy.ndindex(data.shape[:2])
-        ]
-
-        final_alpha = data[1][1][3]
-        if final_alpha != 255:
-            result.append(str(255 - final_alpha))
-
-        return "".join(result)
+    return "".join(result)
 
 def print_usage() -> None:
     print(
         f"Usage: {sys.argv[0]} <help | encode | decode>\n"
-        "encode <snowflake> [color] [r] [g] [b]\n"
+        "encode <snowflake> [color]\n"
         "decode <path/to/file.png>>"
     )
 
 def main() -> None:
     action = sys.argv[1].lower()
 
-    instance = CuteSnowflakes()
-
     try:
-        mode = sys.argv[3].lower()
-
-        if mode == "custom":
-            instance.set_custom(
-                clamp_rgb(int(rgb) for rgb in sys.argv[4:7])
-            )
-
-        instance.set_mode(mode)
+        mode = Color[sys.argv[3].lower()]
     except IndexError:
-        instance.set_mode("red")
+        mode = Color.red
     except ValueError:
         print("Error: values for r, g, b must be valid integers")
         return
@@ -134,12 +99,12 @@ def main() -> None:
     if action in ("help", "?", "/?", "-h", "--help"):
         print_usage()
     elif action in ("encode", "--encode", "-e"):
-        result, meta = instance.encode(sys.argv[2])
+        result, meta = encode(sys.argv[2], mode)
         result.show()
         result.save(f"{sys.argv[2]}.png", pnginfo=meta)
     elif action in ("decode", "--decode", "-d"):
         with PngImageFile(f"{sys.argv[2]}") as fp:
-            print(instance.decode(fp))
+            print(decode(fp))
     else:
         print_usage()
 
