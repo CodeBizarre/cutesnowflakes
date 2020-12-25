@@ -22,11 +22,14 @@ custom_colors = [
     (156, 0, 156),
     (100, 156, 7),
     (-100, 20000, 400),
-    (15, 72, 90)
+    (15, 72, 90),
 ]
 
+
 def delete_test_png():
-    if os.path.exists("test.png"): os.remove("test.png")
+    if os.path.exists("test.png"):
+        os.remove("test.png")
+
 
 @pytest.fixture
 def fixture_encode(scope="function"):
@@ -43,16 +46,19 @@ def fixture_encode(scope="function"):
 
     delete_test_png()
 
+
 def test_decode():
     with PngImageFile(f"src/tests/{uid_18}.png") as fp:
         result = decode(fp)
 
     assert result == uid_18
 
+
 def test_too_large():
     with pytest.raises(ValueError):
         with PngImageFile("src/tests/enlarged.png") as fp:
             decode(fp)
+
 
 def test_no_metadata(caplog):
     caplog.set_level(logging.WARNING)
@@ -60,11 +66,14 @@ def test_no_metadata(caplog):
     with PngImageFile("src/tests/no_meta.png") as fp:
         decode(fp)
 
-        assert "Warning: Unable to fetch image metadata, using default value (Red).\n" \
+        assert (
+            "Warning: Unable to fetch image metadata, using default value (Red).\n"
             in caplog.text
+        )
 
         result = decode(fp, Color.orange)
         assert result == uid_18
+
 
 @pytest.mark.parametrize(
     "uid,expected", [(uid_18, uid_18), (uid_19, uid_19), (uid_20, uid_20)]
@@ -75,16 +84,19 @@ def test_encode_good(fixture_encode, uid, expected):
     assert result.size == (3, 3)
     assert uid_result == expected
 
+
 @pytest.mark.parametrize("uid", [uid_17, uid_21])
 def test_encode_bad(fixture_encode, uid):
     with pytest.raises(ValueError):
         result, uid_result = encode(uid)
+
 
 @pytest.mark.parametrize("color", colors)
 def test_encode_colors(fixture_encode, color):
     result, uid_result = fixture_encode(uid_18, Color[color])
 
     assert uid_result == uid_18
+
 
 @pytest.mark.parametrize("colors", custom_colors)
 def test_custom_encode(colors):
@@ -95,6 +107,7 @@ def test_custom_encode(colors):
         assert decode(fp) == uid_18
 
     delete_test_png()
+
 
 def test_color_error():
     with pytest.raises(ColorError):

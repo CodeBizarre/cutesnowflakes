@@ -79,6 +79,7 @@ result = decode(fp, color = Color.magenta)
 + Custom formatting
 *** Decoding without metadata not using color parameter
 \ Slight code improvements
+\ Blackened code
 ```
 
 ### 0.4.0 (Current release):

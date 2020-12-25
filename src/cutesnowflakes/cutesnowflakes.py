@@ -15,6 +15,7 @@ from PIL.PngImagePlugin import PngImageFile, PngInfo
 
 logging.basicConfig(level=logging.WARNING, format="%(message)s")
 
+
 def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
     """Clamp values in a given tuple to a maximum value of 156.
 
@@ -26,31 +27,41 @@ def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
     """
     return tuple(min(156, i) if i >= 0 else 0 for i in values)
 
+
 class Color(Enum):
     """name:(R,G,B) values for preset colors"""
-    grey    = (100, 100, 100)
-    red     = (100, 0, 0)
-    green   = (0, 100, 0)
-    blue    = (0, 0, 100)
-    purple  = (50, 0, 100)
+
+    grey = (100, 100, 100)
+    red = (100, 0, 0)
+    green = (0, 100, 0)
+    blue = (0, 0, 100)
+    purple = (50, 0, 100)
     magenta = (100, 0, 100)
-    yellow  = (150, 150, 0)
-    orange  = (150, 75, 0)
+    yellow = (150, 150, 0)
+    orange = (150, 75, 0)
 
     @staticmethod
     def list_colors():
         return " ".join(f"{c.name}" for c in Color)
 
+
 class ColorError(KeyError):
     """Color mismatch, display valid colors."""
+
     def __init__(self, *args, **kwargs):
         logging.error(
             f"[CuteSnowflakes Error]: Color must be one of {[c.name for c in Color]}"
         )
         super().__init__()
 
-def encode(snowflake: str, color: Union[Color, str] = Color.red,
-           red: int = 0, green: int = 0, blue: int = 0) -> tuple[Image.Image, PngInfo]:
+
+def encode(
+    snowflake: str,
+    color: Union[Color, str] = Color.red,
+    red: int = 0,
+    green: int = 0,
+    blue: int = 0,
+) -> tuple[Image.Image, PngInfo]:
     """Takes a snowflake in string form and returns a Pillow image.
 
     Args:
@@ -84,11 +95,7 @@ def encode(snowflake: str, color: Union[Color, str] = Color.red,
             raise ColorError("Invalid color passed.")
 
     # Create a list of 2-digit numbers from the given input string
-    numbers = [
-        int(
-            snowflake[i:i + 2]
-        ) for i in range(0, len(snowflake), 2)
-    ]
+    numbers = [int(snowflake[i : i + 2]) for i in range(0, len(snowflake), 2)]
 
     # Create a 3 wide by 3 tall array of 4 values to represent an RGBA image
     data = numpy.zeros([3, 3, 4], dtype=uint8)
@@ -99,7 +106,7 @@ def encode(snowflake: str, color: Union[Color, str] = Color.red,
             numbers[i] + color.value[0],
             numbers[i] + color.value[1],
             numbers[i] + color.value[2],
-            255
+            255,
         )
 
     # If the snowflake was longer than 18 characters, store the remaining data in the
@@ -112,6 +119,7 @@ def encode(snowflake: str, color: Union[Color, str] = Color.red,
     meta.add_text("format", str(color.value[2]))
 
     return (Image.fromarray(data), meta)
+
 
 def decode(image: PngImageFile, color: Color = None) -> str:
     """Decodes a snowflake ID from a cutesnowflakes Pillow image.
@@ -144,9 +152,7 @@ def decode(image: PngImageFile, color: Color = None) -> str:
         meta = color.value[2]
 
     # Calculate the number pairs from the converted image
-    result = [
-        str(data[v][2] - meta).zfill(2) for v in numpy.ndindex(data.shape[:2])
-    ]
+    result = [str(data[v][2] - meta).zfill(2) for v in numpy.ndindex(data.shape[:2])]
 
     # Grab any extra numbers stored in the center pixel's alpha channel
     final_alpha = data[1][1][3]
@@ -155,30 +161,39 @@ def decode(image: PngImageFile, color: Color = None) -> str:
 
     return "".join(result)
 
+
 ## Command line interface
 @click.group()
-def cli(): pass
+def cli():
+    pass
+
 
 @cli.command(name="encode")
 @click.argument("snowflake", required=True, type=str)
 @click.option(
-    "color", "--color", "-c",
+    "color",
+    "--color",
+    "-c",
     required=False,
     type=str,
     default="red",
-    help=Color.list_colors()
+    help=Color.list_colors(),
 )
 @click.option(
-    "path", "--path", "-p",
+    "path",
+    "--path",
+    "-p",
     required=False,
     default=".",
-    help="Path to the folder to save the file in."
+    help="Path to the folder to save the file in.",
 )
 @click.option(
-    "show", "--show", "-s",
+    "show",
+    "--show",
+    "-s",
     required=False,
     type=bool,
-    help="Open the image in the default image viewer after creation."
+    help="Open the image in the default image viewer after creation.",
 )
 def cli_encode(snowflake: str, color: str = "red", path: str = ".", show: bool = False):
     """Encode SNOWFLAKE into a Cute Snowflake. Must be an 18-20 digit number."""
@@ -192,25 +207,31 @@ def cli_encode(snowflake: str, color: str = "red", path: str = ".", show: bool =
 
     image.save(f"{path}/{snowflake}.png", pnginfo=meta)
 
+
 @cli.command(name="custom")
 @click.argument("snowflake", required=True, type=str)
 @click.argument("red", metavar="R", required=True, type=int)
 @click.argument("green", metavar="G", required=True, type=int)
 @click.argument("blue", metavar="B", required=True, type=int)
 @click.option(
-    "path", "--path", "-p",
+    "path",
+    "--path",
+    "-p",
     required=False,
     default=".",
-    help="Path to the folder to save the file in."
+    help="Path to the folder to save the file in.",
 )
 @click.option(
-    "show", "--show", "-s",
+    "show",
+    "--show",
+    "-s",
     required=False,
     type=bool,
-    help="Open the image in the default image viewer after creation."
+    help="Open the image in the default image viewer after creation.",
 )
-def cli_custom(snowflake: str, red: int, green: int, blue: int,
-               path: str = ".", show: bool = False):
+def cli_custom(
+    snowflake: str, red: int, green: int, blue: int, path: str = ".", show: bool = False
+):
     extend_enum(Color, "custom", clamp_rgb((red, green, blue)))
 
     image, meta = encode(snowflake, Color["custom"])
@@ -220,14 +241,17 @@ def cli_custom(snowflake: str, red: int, green: int, blue: int,
 
     image.save(f"{path}/{snowflake}.png", pnginfo=meta)
 
+
 @cli.command(name="decode")
 @click.argument("path", required=True, type=str)
 @click.option(
-    "color", "--color", "-c",
+    "color",
+    "--color",
+    "-c",
     required=False,
     type=str,
     default="red",
-    help=Color.list_colors()
+    help=Color.list_colors(),
 )
 def cli_decode(path: str, color: str = "red"):
     """Decode a snowflake image at the given file PATH"""
@@ -242,8 +266,10 @@ def cli_decode(path: str, color: str = "red"):
     except Exception as e:
         logging.error(f"Error: {e}")
 
+
 def main():
     cli()
+
 
 if __name__ == "__main__":
     main()
