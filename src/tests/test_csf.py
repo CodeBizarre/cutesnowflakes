@@ -15,7 +15,7 @@ uid_19 = "1315158838627233792"
 uid_20 = "01189998819991197253"
 uid_21 = "123123123123123123123"
 
-colors = ["grey", "red", "green", "blue", "purple", "magenta", "yellow", "orange"]
+colors = [c.name for c in Color]
 
 def delete_test_png():
     if os.path.exists("test.png"): os.remove("test.png")
