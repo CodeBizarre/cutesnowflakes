@@ -1,4 +1,6 @@
 pytest
 pytest-cov
 flake8
+setuptools
+wheel
 twine
