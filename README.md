@@ -1,5 +1,5 @@
 ![Tests](https://github.com/CodeBizarre/cutesnowflakes/workflows/Tests/badge.svg?branch=master)
-[![PyPI version](https://badge.fury.io/py/cutesnowflakes.svg)](https://badge.fury.io/py/cutesnowflakess)
+[![PyPI version](https://badge.fury.io/py/cutesnowflakes.svg)](https://badge.fury.io/py/cutesnowflakes)
 
 # Cute Snowflakes
 
