@@ -20,9 +20,12 @@ Requires Python 3.7+
 ## Usage:
 As a command line application:
 
-`cutesnowflakes.py --encode 118999881999119725 red`
+`cutesnowflakes.py encode 118999881999119725`
 
-`cutesnowflakes.py --decode folder/my_file.png`
+`cutesnowflakes.py decode folder/my_file.png`
+
+for more information and options use:
+`cutesnowflakes.py encode --help` or `cutesnowflakes.py decode --help`
 
 Available colors for encoding are:
 ```
@@ -72,6 +75,7 @@ image, meta = encode("118999881999119725", Color.magenta)
 ```diff
 \\\ Major rewrite
 + __version__ import to __init__.py
++ New improved command line interface with Click
 - CuteSnowflakes class
 - Support for custom formatting (Temporarily)
 \ Now requires Python 3.7 or higher

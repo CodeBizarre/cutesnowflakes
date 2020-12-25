@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import sys
-
+import click
 import numpy
 
 from enum import Enum
@@ -23,6 +22,14 @@ class Color(Enum):
     magenta = (100, 0, 100)
     yellow  = (150, 150, 0)
     orange  = (150, 75, 0)
+
+    def __str__(_) -> str:
+        return " ".join(f"{c.name}" for c in Color)
+
+class ColorError(KeyError):
+    def __init__(self, *args, **kwargs):
+        print(f"[CuteSnowflakes Error]: Color must be one of {[c.name for c in Color]}")
+        super().__init__()
 
 def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInfo]:
     """Takes a snowflake in string form and returns a Pillow image."""
@@ -54,7 +61,7 @@ def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInf
     meta.add_text("format", str(mode.value[2]))
     return (Image.fromarray(data), meta)
 
-def decode(image: PngImageFile) -> str:
+def decode(image: PngImageFile, color: Color = Color.red) -> str:
     """Decodes a snowflake ID from a cutesnowflakes Pillow image."""
     if image.width != 3 and image.height != 3:
         raise ValueError("Image must be 3x3 pixels")
@@ -78,35 +85,66 @@ def decode(image: PngImageFile) -> str:
 
     return "".join(result)
 
-def print_usage() -> None:
-    print(
-        f"Usage: {sys.argv[0]} <help | encode | decode>\n"
-        "encode <snowflake> [color]\n"
-        "decode <path/to/file.png>>"
-    )
+@click.group()
+def cli(): pass
 
-def main() -> None:
-    action = sys.argv[1].lower()
+@cli.command(name="encode")
+@click.argument("snowflake", required=True, type=str)
+@click.option(
+    "color", "--color", "-c",
+    required=False,
+    type=str,
+    default="red",
+    help=Color.__str__(Color)
+)
+@click.option(
+    "path", "--path", "-p",
+    required=False,
+    default=".",
+    help="Path to the folder to save the file in."
+)
+@click.option(
+    "show", "--show", "-s",
+    required=False,
+    type=bool,
+    help="Open the image in the default image viewer after creation."
+)
+def cli_encode(snowflake: str, color: str = "red", path: str = ".", show: bool = False):
+    """Encode SNOWFLAKE into a Cute Snowflake. Must be an 18-20 digit number."""
+    try:
+        image, meta = encode(snowflake, Color[color])
+    except KeyError:
+        raise ColorError
+
+    if show:
+        image.show()
+
+    image.save(f"{path}/{snowflake}.png", pnginfo=meta)
+
+@cli.command(name="decode")
+@click.argument("path", required=True, type=str)
+@click.option(
+    "color", "--color", "-c",
+    required=False,
+    type=str,
+    default="red",
+    help=Color.__str__(Color)
+)
+def cli_dencode(path: str, color: str = "red"):
+    """Decode a snowflake image at the given file PATH"""
+    try:
+        set_color = Color[color]
+    except KeyError:
+        raise ColorError
 
     try:
-        mode = Color[sys.argv[3].lower()]
-    except IndexError:
-        mode = Color.red
-    except ValueError:
-        print("Error: values for r, g, b must be valid integers")
-        return
+        with PngImageFile(path) as fp:
+            print(decode(fp, set_color))
+    except Exception as e:
+        print(f"Error: {e}")
 
-    if action in ("help", "?", "/?", "-h", "--help"):
-        print_usage()
-    elif action in ("encode", "--encode", "-e"):
-        result, meta = encode(sys.argv[2], mode)
-        result.show()
-        result.save(f"{sys.argv[2]}.png", pnginfo=meta)
-    elif action in ("decode", "--decode", "-d"):
-        with PngImageFile(f"{sys.argv[2]}") as fp:
-            print(decode(fp))
-    else:
-        print_usage()
+def main():
+    cli()
 
 if __name__ == "__main__":
     main()

@@ -4,7 +4,7 @@ import pytest
 
 from PIL.PngImagePlugin import PngImageFile
 
-from cutesnowflakes.cutesnowflakes import Color, encode, decode, print_usage
+from cutesnowflakes.cutesnowflakes import Color, encode, decode
 
 uid_17 = "00000000000010001"
 uid_18 = "674438327927308358"
@@ -31,14 +31,6 @@ def fixture_encode(scope="function"):
     yield _action
 
     delete_test_png()
-
-def test_usage(capsys):
-    print_usage()
-
-    assert capsys.readouterr().out == \
-        f"Usage: {sys.argv[0]} <help | encode | decode>\n" \
-        "encode <snowflake> [color]\n" \
-        "decode <path/to/file.png>>\n"
 
 def test_decode():
     with PngImageFile(f"src/tests/{uid_18}.png") as fp:
