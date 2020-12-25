@@ -74,7 +74,12 @@ result = decode(fp, color = Color.magenta)
 *** : Fixed
 \   : Changed
 ```
-### 0.4.0 (In development):
+### 1.0.0 (In development)
+```diff
+Coming soon!
+```
+
+### 0.4.0 (Current release):
 ```diff
 \\\ Major rewrite
 + __version__ import to __init__.py
@@ -88,7 +93,7 @@ result = decode(fp, color = Color.magenta)
 \ Improved old docstrings
 ```
 
-### 0.3.0 (Current release)
+### 0.3.0
 ```diff
 + __version__ to __init__.py
 + Error handling for set_mode()
