@@ -47,12 +47,12 @@ class ColorError(KeyError):
         )
         super().__init__()
 
-def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInfo]:
+def encode(snowflake: str, color: Color = Color.red) -> tuple[Image.Image, PngInfo]:
     """Takes a snowflake in string form and returns a Pillow image.
 
     Args:
         snowflake: A snowflake ID between 18-20 digits (inclusive) passed as str.
-        mode: The Color to create the image in.
+        color: The Color to create the image in.
 
     Returns:
         A tuple of (Pillow Image, Pillow PngInfo). The PngInfo is to be used in the
@@ -82,9 +82,9 @@ def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInf
     # Adjust the value of each pixel based on the given snowflake numbers and color choice
     for i, v in enumerate(numpy.ndindex(data.shape[:2])):
         data[v] = (
-            numbers[i] + mode.value[0],
-            numbers[i] + mode.value[1],
-            numbers[i] + mode.value[2],
+            numbers[i] + color.value[0],
+            numbers[i] + color.value[1],
+            numbers[i] + color.value[2],
             255
         )
 
@@ -95,7 +95,7 @@ def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInf
 
     # Store the color's format key in the metadata of the image
     meta = PngInfo()
-    meta.add_text("format", str(mode.value[2]))
+    meta.add_text("format", str(color.value[2]))
 
     return (Image.fromarray(data), meta)
 
