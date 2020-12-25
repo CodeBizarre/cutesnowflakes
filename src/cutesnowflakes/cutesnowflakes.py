@@ -24,7 +24,6 @@ def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
     """
     return tuple(min(156, i) for i in values)
 
-# TODO: Custom
 class Color(Enum):
     """name:(R,G,B) values for preset colors"""
     grey    = (100, 100, 100)
@@ -36,7 +35,8 @@ class Color(Enum):
     yellow  = (150, 150, 0)
     orange  = (150, 75, 0)
 
-    def __str__(self) -> str:
+    @staticmethod
+    def list_colors():
         return " ".join(f"{c.name}" for c in Color)
 
 class ColorError(KeyError):
@@ -150,7 +150,7 @@ def cli(): pass
     required=False,
     type=str,
     default="red",
-    help=Color.__str__(Color)
+    help=Color.list_colors()
 )
 @click.option(
     "path", "--path", "-p",
@@ -183,7 +183,7 @@ def cli_encode(snowflake: str, color: str = "red", path: str = ".", show: bool =
     required=False,
     type=str,
     default="red",
-    help=Color.__str__(Color)
+    help=Color.list_colors()
 )
 def cli_decode(path: str, color: str = "red"):
     """Decode a snowflake image at the given file PATH"""
