@@ -74,7 +74,7 @@ result = decode(fp, color = Color.magenta)
 *** : Fixed
 \   : Changed
 ```
-### 1.0.0 (In development)
+### 1.0.0 (Current release)
 ```diff
 + Custom formatting
 *** Decoding without metadata not using color parameter
@@ -82,7 +82,7 @@ result = decode(fp, color = Color.magenta)
 \ Blackened code
 ```
 
-### 0.4.0 (Current release):
+### 0.4.0:
 ```diff
 \\\ Major rewrite
 + __version__ import to __init__.py
