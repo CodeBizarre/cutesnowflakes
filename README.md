@@ -76,7 +76,8 @@ result = decode(fp, color = Color.magenta)
 ```
 ### 1.0.0 (In development)
 ```diff
-Coming soon!
++ Custom formatting
+\ Slight code improvements
 ```
 
 ### 0.4.0 (Current release):

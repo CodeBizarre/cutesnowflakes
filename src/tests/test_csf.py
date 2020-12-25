@@ -5,7 +5,7 @@ import pytest
 
 from PIL.PngImagePlugin import PngImageFile
 
-from cutesnowflakes.cutesnowflakes import Color, encode, decode
+from cutesnowflakes.cutesnowflakes import Color, ColorError, encode, decode
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,6 +16,14 @@ uid_20 = "01189998819991197253"
 uid_21 = "123123123123123123123"
 
 colors = [c.name for c in Color]
+custom_colors = [
+    (0, 0, 0),
+    (100, 100, 0),
+    (156, 0, 156),
+    (100, 156, 7),
+    (-100, 20000, 400),
+    (15, 72, 90)
+]
 
 def delete_test_png():
     if os.path.exists("test.png"): os.remove("test.png")
@@ -75,17 +83,16 @@ def test_encode_colors(fixture_encode, color):
 
     assert uid_result == uid_18
 
-# def test_custom_encode():
-#     csf.set_custom((100, 999, 62))
-#     csf.set_mode("custom")
+@pytest.mark.parametrize("colors", custom_colors)
+def test_custom_encode(colors):
+    result, meta = encode(uid_18, "custom", colors[0], colors[1], colors[2])
+    result.save("test.png", pnginfo=meta)
 
-#     result, meta = csf.encode(uid_18)
-#     result.save("test.png", pnginfo=meta)
+    with PngImageFile("test.png") as fp:
+        assert decode(fp) == uid_18
 
-#     with PngImageFile("test.png") as fp:
-#         assert csf.decode(fp) == uid_18
+    delete_test_png()
 
-#     with pytest.raises(ValueError):
-#         csf.set_custom((100, 150))
-
-#     if os.path.exists("test.png"): os.remove("test.png")
+def test_color_error():
+    with pytest.raises(ColorError):
+        encode(uid_18, "ref")

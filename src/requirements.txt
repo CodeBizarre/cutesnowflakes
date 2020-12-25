@@ -1,3 +1,4 @@
 numpy==1.19.3
 pillow==8.0
 click>=7.1<7.2
+aenum>=2.2<2.3

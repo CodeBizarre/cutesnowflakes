@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Union
 import logging
 
 import click
 import numpy
 
 from enum import Enum
+from aenum import extend_enum
 
 from numpy import uint8
 from PIL import Image
@@ -47,7 +49,8 @@ class ColorError(KeyError):
         )
         super().__init__()
 
-def encode(snowflake: str, color: Color = Color.red) -> tuple[Image.Image, PngInfo]:
+def encode(snowflake: str, color: Union[Color, str] = Color.red,
+           red: int = 0, green: int = 0, blue: int = 0) -> tuple[Image.Image, PngInfo]:
     """Takes a snowflake in string form and returns a Pillow image.
 
     Args:
@@ -68,6 +71,17 @@ def encode(snowflake: str, color: Color = Color.red) -> tuple[Image.Image, PngIn
 
     if length < 18 or length > 20:
         raise ValueError("Must provide a valid snowflake.")
+
+    if isinstance(color, str):
+        color = color.lower()
+
+        if color == "custom":
+            extend_enum(Color, "custom", clamp_rgb((red, green, blue)))
+
+        try:
+            color = Color[color]
+        except KeyError:
+            raise ColorError("Invalid color passed.")
 
     # Create a list of 2-digit numbers from the given input string
     numbers = [
@@ -169,7 +183,35 @@ def cli_encode(snowflake: str, color: str = "red", path: str = ".", show: bool =
     try:
         image, meta = encode(snowflake, Color[color])
     except KeyError:
-        raise ColorError
+        raise ColorError("Invalid color passed.")
+
+    if show:
+        image.show()
+
+    image.save(f"{path}/{snowflake}.png", pnginfo=meta)
+
+@cli.command(name="custom")
+@click.argument("snowflake", required=True, type=str)
+@click.argument("red", metavar="R", required=True, type=int)
+@click.argument("green", metavar="G", required=True, type=int)
+@click.argument("blue", metavar="B", required=True, type=int)
+@click.option(
+    "path", "--path", "-p",
+    required=False,
+    default=".",
+    help="Path to the folder to save the file in."
+)
+@click.option(
+    "show", "--show", "-s",
+    required=False,
+    type=bool,
+    help="Open the image in the default image viewer after creation."
+)
+def cli_custom(snowflake: str, red: int, green: int, blue: int,
+               path: str = ".", show: bool = False):
+    extend_enum(Color, "custom", clamp_rgb((red, green, blue)))
+
+    image, meta = encode(snowflake, Color["custom"])
 
     if show:
         image.show()
@@ -190,7 +232,7 @@ def cli_decode(path: str, color: str = "red"):
     try:
         set_color = Color[color]
     except KeyError:
-        raise ColorError
+        raise ColorError("Invalid color passed.")
 
     try:
         with PngImageFile(path) as fp:
