@@ -81,6 +81,7 @@ result = decode(fp, color = Color.magenta)
 + New improved command line interface with Click
 + New docstrings
 + Logging
++ Added descriptive comments where useful
 - CuteSnowflakes class
 - Support for custom formatting (Temporarily)
 \ Now requires Python 3.7 or higher
