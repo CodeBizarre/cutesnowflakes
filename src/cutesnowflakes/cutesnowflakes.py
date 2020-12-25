@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import logging
+
 import click
 import numpy
 
@@ -8,6 +10,8 @@ from enum import Enum
 from numpy import uint8
 from PIL import Image
 from PIL.PngImagePlugin import PngImageFile, PngInfo
+
+logging.basicConfig(level=logging.WARNING, format="%(message)s")
 
 def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
     return tuple(min(156, i) for i in values)
@@ -30,7 +34,9 @@ class Color(Enum):
 class ColorError(KeyError):
     """Color mismatch, display valid colors."""
     def __init__(self, *args, **kwargs):
-        print(f"[CuteSnowflakes Error]: Color must be one of {[c.name for c in Color]}")
+        logging.error(
+            f"[CuteSnowflakes Error]: Color must be one of {[c.name for c in Color]}"
+        )
         super().__init__()
 
 def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInfo]:
@@ -102,7 +108,9 @@ def decode(image: PngImageFile, color: Color = None) -> str:
     try:
         meta = int(image.text["format"])
     except (AttributeError, KeyError):
-        print("Warning: Unable to fetch image metadata, using default value (Red).")
+        logging.warning(
+            "Warning: Unable to fetch image metadata, using default value (Red)."
+        )
 
     result = [
         str(data[v][2] - meta).zfill(2) for v in numpy.ndindex(data.shape[:2])
@@ -170,7 +178,7 @@ def cli_decode(path: str, color: str = "red"):
         with PngImageFile(path) as fp:
             print(decode(fp, set_color))
     except Exception as e:
-        print(f"Error: {e}")
+        logging.error(f"Error: {e}")
 
 def main():
     cli()

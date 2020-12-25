@@ -1,9 +1,13 @@
 import os
+import logging
+
 import pytest
 
 from PIL.PngImagePlugin import PngImageFile
 
 from cutesnowflakes.cutesnowflakes import Color, encode, decode
+
+LOGGER = logging.getLogger(__name__)
 
 uid_17 = "00000000000010001"
 uid_18 = "674438327927308358"
@@ -42,12 +46,14 @@ def test_too_large():
         with PngImageFile("src/tests/enlarged.png") as fp:
             decode(fp)
 
-def test_no_metadata(capsys):
+def test_no_metadata(caplog):
+    caplog.set_level(logging.WARNING)
+
     with PngImageFile("src/tests/no_meta.png") as fp:
         decode(fp)
 
-        assert capsys.readouterr().out == \
-            "Warning: Unable to fetch image metadata, using default value (Red).\n"
+        assert "Warning: Unable to fetch image metadata, using default value (Red).\n" \
+            in caplog.text
 
 @pytest.mark.parametrize(
     "uid,expected", [(uid_18, uid_18), (uid_19, uid_19), (uid_20, uid_20)]
