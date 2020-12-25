@@ -61,6 +61,9 @@ with PngImageFile("my_image.png") as fp:
 from cutesnowflakes import Color
 
 image, meta = encode("118999881999119725", Color.magenta)
+
+# To decode with a specific color:
+result = decode(fp, color = Color.magenta)
 ```
 
 ## Changelog:
