@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from typing import Union
 import logging
 
 import click
 import numpy
 
+from typing import Union
 from enum import Enum
-from aenum import extend_enum
 
+from aenum import extend_enum
 from numpy import uint8
 from PIL import Image
 from PIL.PngImagePlugin import PngImageFile, PngInfo
