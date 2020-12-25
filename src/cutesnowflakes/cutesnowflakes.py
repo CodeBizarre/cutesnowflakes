@@ -14,6 +14,14 @@ from PIL.PngImagePlugin import PngImageFile, PngInfo
 logging.basicConfig(level=logging.WARNING, format="%(message)s")
 
 def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
+    """Clamp values in a given tuple to a maximum value of 156.
+
+    Arguments:
+        values: A tuple of RGB(A) values to be clamped.
+
+    Returns:
+        The clamped result of `values`.
+    """
     return tuple(min(156, i) for i in values)
 
 # TODO: Custom
