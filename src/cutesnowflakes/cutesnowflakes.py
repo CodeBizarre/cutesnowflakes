@@ -133,13 +133,15 @@ def decode(image: PngImageFile, color: Color = None) -> str:
 
     meta = 100
 
-    # FIXME: color parameter is not used
-    try:
-        meta = int(image.text["format"])
-    except (AttributeError, KeyError):
-        logging.warning(
-            "Warning: Unable to fetch image metadata, using default value (Red)."
-        )
+    if not color:
+        try:
+            meta = int(image.text["format"])
+        except (AttributeError, KeyError):
+            logging.warning(
+                "Warning: Unable to fetch image metadata, using default value (Red)."
+            )
+    else:
+        meta = color.value[2]
 
     # Calculate the number pairs from the converted image
     result = [

@@ -63,6 +63,9 @@ def test_no_metadata(caplog):
         assert "Warning: Unable to fetch image metadata, using default value (Red).\n" \
             in caplog.text
 
+        result = decode(fp, Color.orange)
+        assert result == uid_18
+
 @pytest.mark.parametrize(
     "uid,expected", [(uid_18, uid_18), (uid_19, uid_19), (uid_20, uid_20)]
 )
