@@ -22,7 +22,7 @@ def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
     Returns:
         The clamped result of `values`.
     """
-    return tuple(min(156, i) for i in values)
+    return tuple(min(156, i) if i >= 0 else 0 for i in values)
 
 class Color(Enum):
     """name:(R,G,B) values for preset colors"""
