@@ -159,7 +159,7 @@ def cli_encode(snowflake: str, color: str = "red", path: str = ".", show: bool =
     default="red",
     help=Color.__str__(Color)
 )
-def cli_dencode(path: str, color: str = "red"):
+def cli_decode(path: str, color: str = "red"):
     """Decode a snowflake image at the given file PATH"""
     try:
         set_color = Color[color]
