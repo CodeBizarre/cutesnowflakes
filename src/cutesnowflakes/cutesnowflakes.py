@@ -23,7 +23,7 @@ class Color(Enum):
     yellow  = (150, 150, 0)
     orange  = (150, 75, 0)
 
-    def __str__(_) -> str:
+    def __str__(self) -> str:
         return " ".join(f"{c.name}" for c in Color)
 
 class ColorError(KeyError):
