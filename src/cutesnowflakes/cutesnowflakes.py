@@ -14,6 +14,7 @@ def clamp_rgb(values: tuple[int, ...]) -> tuple[int, ...]:
 
 # TODO: Custom
 class Color(Enum):
+    """name:(R,G,B) values for preset colors"""
     grey    = (100, 100, 100)
     red     = (100, 0, 0)
     green   = (0, 100, 0)
@@ -27,12 +28,28 @@ class Color(Enum):
         return " ".join(f"{c.name}" for c in Color)
 
 class ColorError(KeyError):
+    """Color mismatch, display valid colors."""
     def __init__(self, *args, **kwargs):
         print(f"[CuteSnowflakes Error]: Color must be one of {[c.name for c in Color]}")
         super().__init__()
 
 def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInfo]:
-    """Takes a snowflake in string form and returns a Pillow image."""
+    """Takes a snowflake in string form and returns a Pillow image.
+
+    Args:
+        snowflake: A snowflake ID between 18-20 digits (inclusive) passed as str.
+        mode: The Color to create the image in.
+
+    Returns:
+        A tuple of (Pillow Image, Pillow PngInfo). The PngInfo is to be used in the
+        image.save() function. For example:
+
+        image, meta = encode("01189998819991197253")
+        image.save("my_file.png", pnginfo=meta)
+
+    Raises:
+        ValueError: Invalid snowflake passed.
+    """
     length = len(snowflake)
 
     if length < 18 or length > 20:
@@ -61,8 +78,19 @@ def encode(snowflake: str, mode: Color = Color.red) -> tuple[Image.Image, PngInf
     meta.add_text("format", str(mode.value[2]))
     return (Image.fromarray(data), meta)
 
-def decode(image: PngImageFile, color: Color = Color.red) -> str:
-    """Decodes a snowflake ID from a cutesnowflakes Pillow image."""
+def decode(image: PngImageFile, color: Color = None) -> str:
+    """Decodes a snowflake ID from a cutesnowflakes Pillow image.
+
+    Args:
+        image: A Pillow PngImageFile representation of a Cute Snowflake.
+        color: The color to use as fallback if format metadata is not found in the image.
+
+    Returns:
+        A string representing the snowflake ID decoded from the image.
+
+    Raises:
+        ValueError: An image larger/smaller than 3x3 pixels was passed.
+    """
     if image.width != 3 and image.height != 3:
         raise ValueError("Image must be 3x3 pixels")
 
@@ -70,6 +98,7 @@ def decode(image: PngImageFile, color: Color = Color.red) -> str:
 
     meta = 100
 
+    # FIXME: color parameter is not used
     try:
         meta = int(image.text["format"])
     except (AttributeError, KeyError):
