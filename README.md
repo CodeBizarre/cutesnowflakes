@@ -74,7 +74,13 @@ result = decode(fp, color = Color.magenta)
 *** : Fixed
 \   : Changed
 ```
-### 1.0.0 (Current release)
+### 1.0.1 (Current release)
+```diff
+*** Missing info in setup.py
+\ Clarified version compatibilies in setup.py
+```
+
+### 1.0.0
 ```diff
 + Custom formatting
 *** Decoding without metadata not using color parameter
